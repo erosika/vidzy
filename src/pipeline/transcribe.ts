@@ -411,29 +411,33 @@ export async function runWhisperCli(
   }
 
   const startMs = Date.now();
-  const proc = Bun.spawn(args, {
-    stdout: "pipe",
-    stderr: "pipe",
-  });
-
-  const timer = setTimeout(() => proc.kill(), WHISPER_TIMEOUT_MS);
-  let stdout: string;
-  let stderr: string;
   try {
-    [stdout, stderr] = await Promise.all([
-      new Response(proc.stdout).text(),
-      new Response(proc.stderr).text(),
-    ]);
-    await proc.exited;
-  } finally {
-    clearTimeout(timer);
-  }
+    const proc = Bun.spawn(args, {
+      stdout: "pipe",
+      stderr: "pipe",
+    });
 
-  return {
-    success: proc.exitCode === 0,
-    output: stdout || stderr,
-    durationMs: Date.now() - startMs,
-  };
+    const timer = setTimeout(() => proc.kill(), WHISPER_TIMEOUT_MS);
+    let stdout: string;
+    let stderr: string;
+    try {
+      [stdout, stderr] = await Promise.all([
+        new Response(proc.stdout).text(),
+        new Response(proc.stderr).text(),
+      ]);
+      await proc.exited;
+    } finally {
+      clearTimeout(timer);
+    }
+
+    return {
+      success: proc.exitCode === 0,
+      output: stdout || stderr,
+      durationMs: Date.now() - startMs,
+    };
+  } catch {
+    return { success: false, output: "whisper binary not available", durationMs: 0 };
+  }
 }
 
 // ----- OpenAI Whisper API Fallback -----
