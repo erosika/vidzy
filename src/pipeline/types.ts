@@ -346,6 +346,8 @@ export type ExportPlatform =
   | "tiktok"
   | "instagram_reels"
   | "instagram_feed"
+  | "twitter"
+  | "twitter_vertical"
   | "raw";
 
 /** Export specification for a single platform. */
@@ -426,6 +428,28 @@ export const PLATFORM_SPECS: Record<ExportPlatform, ExportSpec> = {
     audioBitrate: "128k",
     targetLufs: -14,
     captions: "optional",
+  },
+  twitter: {
+    platform: "twitter",
+    aspect: 16 / 9,
+    width: 1280,
+    height: 720,
+    crf: 20,
+    audioCodec: "aac",
+    audioBitrate: "192k",
+    targetLufs: -14,
+    captions: "sidecar",
+  },
+  twitter_vertical: {
+    platform: "twitter_vertical",
+    aspect: 9 / 16,
+    width: 720,
+    height: 1280,
+    crf: 22,
+    audioCodec: "aac",
+    audioBitrate: "128k",
+    targetLufs: -14,
+    captions: "burned",
   },
   raw: {
     platform: "raw",

@@ -11,7 +11,7 @@
  */
 
 import { join, basename, extname } from "node:path";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, statSync } from "node:fs";
 import type {
   ExportPlatform,
   ExportSpec,
@@ -43,13 +43,14 @@ export function buildExportArgs(
     return args;
   }
 
-  // Add subtitle input for burn-in
+  // Add subtitle input for burn-in (skip empty SRT files)
   if (srtPath && spec.captions === "burned" && existsSync(srtPath)) {
-    // Subtitles filter is appended to the video filter chain
-    const subtitleFilter = `subtitles='${srtPath.replace(/'/g, "'\\''")}'`;
-    videoFilter = videoFilter
-      ? `${videoFilter},${subtitleFilter}`
-      : subtitleFilter;
+    if (statSync(srtPath).size > 0) {
+      const subtitleFilter = `subtitles='${srtPath.replace(/'/g, "'\\''")}'`;
+      videoFilter = videoFilter
+        ? `${videoFilter},${subtitleFilter}`
+        : subtitleFilter;
+    }
   }
 
   // Video filter
@@ -248,7 +249,7 @@ export function listIntermediateFiles(
  * Check if a platform is short-form (needs reframing to vertical).
  */
 export function isShortForm(platform: ExportPlatform): boolean {
-  return ["youtube_shorts", "tiktok", "instagram_reels"].includes(platform);
+  return ["youtube_shorts", "tiktok", "instagram_reels", "twitter_vertical"].includes(platform);
 }
 
 /**

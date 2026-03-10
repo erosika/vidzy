@@ -109,7 +109,7 @@ export async function runFfmpeg(
   return {
     success: exitCode === 0,
     stdout,
-    stderr: stderr.slice(-2000),
+    stderr: stderr.length > 4000 ? stderr.slice(0, 2000) + "\n...\n" + stderr.slice(-2000) : stderr,
     durationMs: Date.now() - startMs,
   };
 }

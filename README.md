@@ -99,6 +99,8 @@ Without an LLM adapter, analyze and plan phases use heuristic-only logic. Everyt
 | tiktok | 9:16 | 1080x1920 | burned |
 | instagram_reels | 9:16 | 1080x1920 | burned |
 | instagram_feed | 1:1 | 1080x1080 | optional |
+| twitter | 16:9 | 1280x720 | sidecar SRT |
+| twitter_vertical | 9:16 | 720x1280 | burned |
 | raw | original | original | sidecar SRT |
 
 ## Crash recovery

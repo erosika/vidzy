@@ -601,7 +601,7 @@ export async function runPipeline(
         const exportResult = await runFfmpeg(exportArgs, 1_200_000);
 
         if (!exportResult.success) {
-          log(`[vidzy]   Export failed for ${platform}: ${exportResult.stderr.slice(0, 200)}`);
+          log(`[vidzy]   Export failed for ${platform}: ${exportResult.stderr.slice(0, 500)}`);
           continue;
         }
 
