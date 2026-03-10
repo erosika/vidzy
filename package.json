@@ -4,6 +4,9 @@
   "description": "Video production pipeline. Ingest, transcribe, analyze, plan, edit, soundtrack, reframe, filter, export.",
   "module": "src/main.ts",
   "type": "module",
+  "bin": {
+    "vidzy": "src/main.ts"
+  },
   "scripts": {
     "start": "bun run src/main.ts",
     "test": "bun test",

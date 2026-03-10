@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 /**
  * vidzy -- video production pipeline CLI.
  *
@@ -70,30 +71,48 @@ function parseArgs(argv: string[]): {
 }
 
 function printUsage(): void {
+  const llm = process.env.OPENROUTER_API_KEY ? "yes" : "no";
+  const whisper = process.env.OPENAI_API_KEY ? "yes (api)" : "no";
   console.log(`vidzy -- video production pipeline
 
 Usage:
   vidzy <source-dir> [options]
   vidzy --task <task.md>
+  vidzy --watch <tasks-dir>
 
 Options:
   --output <dir>           Output directory (default: <source>/../renders/<source-name>)
-  --platforms <list>       Comma-separated: youtube_long,youtube_shorts,tiktok,instagram_reels,instagram_feed,raw
+  --platforms <list>       Comma-separated platform targets (default: youtube_long)
   --beauty                 Enable beauty filter
   --beauty-strength <s>    subtle | medium | strong (default: subtle)
   --music <dir>            Music library directory for soundtrack
-  --task <file.md>         Run from a task file with frontmatter
-  --watch <dir>            Watch a directory for .md task files
+  --task <file.md>         Run from a task file with YAML frontmatter
+  --watch <dir>            Watch directory for .md task files (polls every 30s)
   -h, --help               Show this help
 
+Platforms:
+  youtube_long      16:9  1920x1080  sidecar SRT
+  youtube_shorts    9:16  1080x1920  burned captions
+  tiktok            9:16  1080x1920  burned captions
+  instagram_reels   9:16  1080x1920  burned captions
+  instagram_feed    1:1   1080x1080  optional captions
+  twitter           16:9  1280x720   sidecar SRT
+  twitter_vertical  9:16  720x1280   burned captions
+  raw               orig  original   sidecar SRT
+
 Environment:
-  OPENAI_API_KEY           Enable OpenAI Whisper API fallback
+  OPENROUTER_API_KEY       LLM for scene analysis + editorial planning
+  OPENROUTER_DEFAULT_MODEL Model override (default: anthropic/claude-3.5-sonnet)
+  OPENAI_API_KEY           Whisper API for transcription
   WHISPER_BINARY           Path to whisper-cli binary
   WHISPER_MODEL_PATH       Path to whisper model file
   DIRECTOR_BEAUTY_DEFAULT  Default beauty filter (true/false)
 
-Requires: ffmpeg, ffprobe in PATH.
-Optional: whisper-cli for local transcription.`);
+Status:
+  LLM:       ${llm}
+  Whisper:   ${whisper}
+  ffmpeg:    required (must be in PATH)
+  ffprobe:   required (must be in PATH)`);
 }
 
 // ----- LLM Setup -----
